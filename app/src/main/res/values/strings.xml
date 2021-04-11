@@ -1,0 +1,19 @@
+<resources>
+    <string name="app_name">InspiringPersons</string>
+
+    <string name="menutitle_showInspiringPersons">Inspiring Persons</string>
+    <string name="title_activity_inspiring_persons">InspiringPersonsActivity</string>
+    <string name="et_image_link_hint">Person image link</string>
+    <string name="etDescriptionHint">Person description</string>
+    <string name="etBirthDateHint">Birth date </string>
+    <string name="btnSavePerson">Save person</string>
+    <string name="etDeathDateHint">Death date</string>
+    <string name="etQuoteHint">Quotes from a person</string>
+    <string name="btnAddQuote">Add quote</string>
+    <string name="home_title_birth_date">Birth date </string>
+    <string name="home_title_death_date">Death date</string>
+    <string name="toast_fill_all">Fill all parameters!</string>
+    <string name="image_person">Person image</string>
+    <string name="textview_person_dates"> %s - %s</string>
+    <string name="toast_empty_quote"> No quotes </string>
+</resources>
