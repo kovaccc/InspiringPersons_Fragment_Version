@@ -8,4 +8,6 @@ interface QuoteRepository {
     fun getPersonsAndQuotes() : Flow<List<PersonsWithQuotes>>
 
     suspend fun insertQuotes(quotes: List<Quote>)
+
+    fun getQuotes() : Flow<List<Quote>>
 }

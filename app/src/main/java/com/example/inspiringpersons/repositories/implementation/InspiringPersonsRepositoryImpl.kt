@@ -9,4 +9,8 @@ class InspiringPersonsRepositoryImpl @Inject constructor (private val inspiringP
     override suspend fun insertPerson(person: InspiringPerson) : Long {
         return inspiringPersonDao.insertInspiringPerson(person)
     }
+
+    override suspend fun deletePerson(person: InspiringPerson) {
+        inspiringPersonDao.deleteInspiringPerson(person)
+    }
 }

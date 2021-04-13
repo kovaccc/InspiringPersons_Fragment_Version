@@ -37,6 +37,19 @@ class InspiringPersonsViewHolder(private val binding: ItemInspiringPersonBinding
             listener.onItemClick(personWithQuotes)
         }
 
+        binding.apply {
+            ibEdit.setOnClickListener {
+                listener.onEditClick(personWithQuotes, this@InspiringPersonsViewHolder)
+            }
+
+            ibDelete.setOnClickListener {
+                listener.onDeleteClick(personWithQuotes, this@InspiringPersonsViewHolder)
+            }
+
+        }
+
+
+
         Log.d(TAG, "bind: ends with $personWithQuotes and listener $listener")
     }
 

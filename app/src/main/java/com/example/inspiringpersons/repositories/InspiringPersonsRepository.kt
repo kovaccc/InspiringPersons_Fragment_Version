@@ -6,4 +6,5 @@ import com.example.inspiringpersons.model.InspiringPerson
 interface InspiringPersonsRepository {
     suspend fun insertPerson(person: InspiringPerson): Long
 
+    suspend fun deletePerson(person: InspiringPerson)
 }

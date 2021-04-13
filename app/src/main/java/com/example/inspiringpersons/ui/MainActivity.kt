@@ -5,12 +5,9 @@ import android.content.Intent
 import android.os.Bundle
 import android.util.Log
 import androidx.appcompat.app.AppCompatActivity
-import android.view.Menu
-import android.view.MenuItem
-import android.view.View
-import android.widget.ArrayAdapter
 import android.widget.DatePicker
 import androidx.activity.viewModels
+import androidx.core.view.get
 import com.example.inspiringpersons.R
 import com.example.inspiringpersons.databinding.ActivityMainBinding
 import com.example.inspiringpersons.databinding.ContentMainBinding
@@ -20,11 +17,10 @@ import com.example.inspiringpersons.dialogs.DatePickerFragment
 import com.example.inspiringpersons.viewmodels.MainViewModel
 import dagger.hilt.android.AndroidEntryPoint
 import java.util.*
-import android.text.format.DateFormat
-import android.widget.AdapterView
-import android.widget.Toast
-import com.example.inspiringpersons.model.InspiringPerson
 import com.example.inspiringpersons.dialogs.DATE_PICKER_DATE
+import com.example.inspiringpersons.model.PersonsWithQuotes
+import com.example.inspiringpersons.pagerAdapter.MenuSlidePagerAdapter
+import com.google.android.material.tabs.TabLayoutMediator
 
 
 private const val TAG = "MainActivity"
@@ -33,16 +29,12 @@ private const val DIALOG_DEATH_DATE = 2
 
 
 @AndroidEntryPoint
-class MainActivity : AppCompatActivity(), DatePickerDialog.OnDateSetListener {
+class MainActivity : AppCompatActivity(), DatePickerDialog.OnDateSetListener,EditPersonFragment.OnDateClicked,PersonListFragment.OnPersonEdit {
 
     private lateinit var mainActivityBinding: ActivityMainBinding
     private lateinit var contentMainBinding: ContentMainBinding
 
-
     private val mainViewModel: MainViewModel by viewModels()
-
-    private var birthDate: Long = 0L
-    private var deathDate: Long = 0L
 
     override fun onCreate(savedInstanceState: Bundle?) {
         Log.d(TAG, "onCreate: starts")
@@ -54,123 +46,28 @@ class MainActivity : AppCompatActivity(), DatePickerDialog.OnDateSetListener {
 
         contentMainBinding = ContentMainBinding.bind(view) // content main is merged layout
 
-        
-        val dateListener = initializeDateListener()
-        contentMainBinding.etBirthDate.setOnClickListener(dateListener)
-        contentMainBinding.etDeathDate.setOnClickListener(dateListener)
 
-        var quotes = ArrayList<String>()
-        val adapter = ArrayAdapter(this, R.layout.item_quote, R.id.quote, quotes)
-        contentMainBinding.lvPersonQuotes.adapter = adapter
-
-
-        contentMainBinding.lvPersonQuotes.setOnItemClickListener {parent, view, position, id ->
-            mainViewModel.deleteQuote(position)
-        }
-
-
-        contentMainBinding.apply {
-
-            btnSave.setOnClickListener {
-                if(addeditDescription.text.isEmpty() || etImageLink.text.isEmpty()) {
-                    Toast.makeText(this@MainActivity, getString(R.string.toast_fill_all), Toast.LENGTH_SHORT).show()
-                }
-                else {
-                    mainViewModel.saveInspiringPerson(
-                        InspiringPerson(imageLink = etImageLink.text.toString(),
-                        description = addeditDescription.text.toString(), birthDate = birthDate,
-                        deathDate = deathDate)
-                    )
-                }
-            }
-        }
-
-
-
-        mainViewModel.currentQuotesLD.observe(this,
-            {
-                Log.d(TAG, "onCreate: observing quotes with values $it")
-                quotes = it
-                adapter.clear()
-                adapter.addAll(quotes)
-                adapter.notifyDataSetChanged()
-                Log.d(TAG, "onCreate: observing quotes with adapter value ${adapter.count}")
-
-            })
-
-        mainViewModel.birthDateLD.observe(this,
-            {
-
-                val dateFormat = DateFormat.getDateFormat(this) // formats date depending on different parts of a world
-                val userDate = dateFormat.format(it)
-                birthDate = it
-                contentMainBinding.etBirthDate.setText(userDate)
-            })
-
-        mainViewModel.deathDateLD.observe(this,
-            {
-                val dateFormat = DateFormat.getDateFormat(this)
-                val userDate = dateFormat.format(it)
-                deathDate = it
-                contentMainBinding.etDeathDate.setText(userDate)
-            })
-
-
-        contentMainBinding.btnAddQuote.setOnClickListener {
-            val quote = contentMainBinding.etQuote.text.toString()
-            Log.d(TAG, "onCreate: adding quote with value $quote")
-            if(quote.isNotEmpty()) {
-                mainViewModel.addQuote(quote)
-            }
-        }
-
-
+        setUpPager()
 
         Log.d(TAG, "onCreate: ends")
     }
 
-    private fun initializeDateListener(): View.OnClickListener {
-        return  View.OnClickListener { v ->
 
-            contentMainBinding.apply {
-                when (v) {
-                    etBirthDate -> {
-                        showDatePickerDialog(getString(R.string.home_title_birth_date), DIALOG_BIRTH_DATE)
 
-                    }
-
-                    etDeathDate -> {
-                        showDatePickerDialog(getString(R.string.home_title_death_date), DIALOG_DEATH_DATE)
-                    }
-                }
-            }
-        }
-
-    }
-
-    private fun showDatePickerDialog(title: String, dialogId: Int) {
-        Log.d(TAG, "showDatePickerDialog: starts with $title and $dialogId")
+    private fun showDatePickerDialog(title: String, dialogId: Int, date: Long) {
+        Log.d(TAG, "showDatePickerDialog: starts with $title and $dialogId and $date")
         val dialogFragment = DatePickerFragment()
 
         val arguments = Bundle()
-        arguments.putInt(DATE_PICKER_ID, dialogId)
-        arguments.putString(DATE_PICKER_TITLE, title)
 
-        val date = Date()
-        date.time = when(dialogId) {
-            DIALOG_BIRTH_DATE -> {
-                birthDate
-            }
+        val dateDialog = Date()
+        dateDialog.time = date
 
-            DIALOG_DEATH_DATE -> {
-                deathDate
-            }
-            else -> {
-                GregorianCalendar(Locale.getDefault()).timeInMillis
-            }
+        arguments.apply {
+            putInt(DATE_PICKER_ID, dialogId)
+            putString(DATE_PICKER_TITLE, title)
+            putSerializable(DATE_PICKER_DATE, dateDialog)
         }
-
-        arguments.putSerializable(DATE_PICKER_DATE, date)
 
         dialogFragment.arguments = arguments
         dialogFragment.show(supportFragmentManager, "datePicker")
@@ -178,22 +75,21 @@ class MainActivity : AppCompatActivity(), DatePickerDialog.OnDateSetListener {
         Log.d(TAG, "showDatePickerDialog: ends")
     }
 
-    override fun onCreateOptionsMenu(menu: Menu): Boolean {
-        // Inflate the menu; this adds items to the action bar if it is present.
-        menuInflater.inflate(R.menu.menu_main, menu)
-        return true
+
+    private fun setUpPager() {
+
+        val menuNodesList = arrayListOf(
+              "Edit", "List")
+
+        val pagerAdapter = MenuSlidePagerAdapter(this, menuNodesList)
+        contentMainBinding.viewPagerPersons.adapter = pagerAdapter
+
+        TabLayoutMediator(mainActivityBinding.tabInspiringPerson, contentMainBinding.viewPagerPersons) { tab, position ->
+            tab.text = pagerAdapter.getTitle(position)
+        }.attach()
+
     }
 
-    override fun onOptionsItemSelected(item: MenuItem): Boolean {
-        // Handle action bar item clicks here. The action bar will
-        // automatically handle clicks on the Home/Up button, so long
-        // as you specify a parent activity in AndroidManifest.xml.
-       when (item.itemId) {
-            R.id.menumain_showInspiringPersons -> startActivity(Intent(this, InspiringPersonsActivity::class.java))
-        }
-
-        return super.onOptionsItemSelected(item)
-    }
 
     override fun onDateSet(view: DatePicker, year: Int, month: Int, dayOfMonth: Int) {
         val calendar = GregorianCalendar()
@@ -218,5 +114,22 @@ class MainActivity : AppCompatActivity(), DatePickerDialog.OnDateSetListener {
         Log.d(TAG, "onDestroy: starts")
         super.onDestroy()
         Log.d(TAG, "onDestroy: ends")
+    }
+
+    override fun onBirthDatePicked(date: Long) {
+        showDatePickerDialog(getString(R.string.home_title_birth_date), DIALOG_BIRTH_DATE, date)
+    }
+
+    override fun onDeathDatePicked(date: Long) {
+        showDatePickerDialog(getString(R.string.home_title_death_date), DIALOG_DEATH_DATE, date)
+    }
+
+    override fun onPersonEdit(personWithQuotes: PersonsWithQuotes) {
+        Log.d(TAG, "onPersonEdit: starts")
+
+        val intent = Intent(this@MainActivity, FoodMenuActivity::class.java)
+        intent.putExtra(MEAL_DATE_TRANSFER, mDate)
+        intent.putExtra(CURRENT_USER_ID_TRANSFER, currentUser?.id)
+        startActivity(intent)
     }
 }

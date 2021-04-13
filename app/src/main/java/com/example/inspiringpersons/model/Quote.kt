@@ -14,7 +14,7 @@ import androidx.room.PrimaryKey
     ],
     indices = [Index("inspiringPersonId")],
 )
-data class Quote(
+data class Quote (
     @PrimaryKey(autoGenerate = true) val quoteId: Long = 0,
     val inspiringPersonId: Long,
     val quoteText: String
