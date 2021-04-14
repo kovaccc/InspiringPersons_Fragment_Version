@@ -5,14 +5,14 @@ import android.util.Log
 import androidx.recyclerview.widget.RecyclerView
 import com.bumptech.glide.Glide
 import com.example.inspiringpersons.R
-import com.example.inspiringpersons.model.PersonsWithQuotes
+import com.example.inspiringpersons.model.PersonWithQuotes
 import com.example.inspiringpersons.databinding.ItemInspiringPersonBinding
 
 private const val TAG = "InspiringPersonsView"
 
 class InspiringPersonsViewHolder(private val binding: ItemInspiringPersonBinding) : RecyclerView.ViewHolder(binding.root) {
 
-    fun bind(personWithQuotes: PersonsWithQuotes, listener: InspiringPersonsAdapter.OnPersonClickListener ) {
+    fun bind(personWithQuotes: PersonWithQuotes, listener: InspiringPersonsAdapter.OnPersonClickListener ) {
 
         Log.d(TAG, "bind: starts with $personWithQuotes and listener $listener")
 
@@ -33,11 +33,14 @@ class InspiringPersonsViewHolder(private val binding: ItemInspiringPersonBinding
             tvPersonDescription.text = personWithQuotes.inspiringPerson.description
         }
 
-        itemView.setOnClickListener {
-            listener.onItemClick(personWithQuotes)
-        }
 
         binding.apply {
+
+            ivPerson.setOnClickListener {
+                Log.d(TAG, "bind: ivPerson clicked ")
+                listener.onItemClick(personWithQuotes)
+            }
+
             ibEdit.setOnClickListener {
                 listener.onEditClick(personWithQuotes, this@InspiringPersonsViewHolder)
             }

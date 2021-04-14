@@ -4,6 +4,7 @@ import androidx.room.*
 import com.example.inspiringpersons.model.InspiringPerson
 import kotlinx.coroutines.flow.Flow
 
+
 @Dao
 interface InspiringPersonDao {
 
@@ -22,4 +23,7 @@ interface InspiringPersonDao {
 
     @Delete
     suspend fun deleteInspiringPerson(inspiringPerson: InspiringPerson)
+
+    @Update
+    suspend fun updateInspiringPerson(inspiringPerson: InspiringPerson): Int
 }

@@ -10,6 +10,10 @@ class InspiringPersonsRepositoryImpl @Inject constructor (private val inspiringP
         return inspiringPersonDao.insertInspiringPerson(person)
     }
 
+    override suspend fun updatePerson(person: InspiringPerson): Int {
+        return inspiringPersonDao.updateInspiringPerson(person)
+    }
+
     override suspend fun deletePerson(person: InspiringPerson) {
         inspiringPersonDao.deleteInspiringPerson(person)
     }

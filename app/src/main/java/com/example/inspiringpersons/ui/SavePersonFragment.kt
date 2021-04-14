@@ -14,15 +14,15 @@ import androidx.fragment.app.viewModels
 import com.example.inspiringpersons.R
 import com.example.inspiringpersons.databinding.FragmentEditPersonBinding
 import com.example.inspiringpersons.model.InspiringPerson
-import com.example.inspiringpersons.viewmodels.EditPersonViewModel
+import com.example.inspiringpersons.viewmodels.SavePersonViewModel
 import dagger.hilt.android.AndroidEntryPoint
 import java.util.ArrayList
 
 
-private const val TAG = "EditPersonFragment"
+private const val TAG = "SavePersonFragment"
 
 @AndroidEntryPoint
-class EditPersonFragment : Fragment() {
+class SavePersonFragment : Fragment() {
 
     interface OnDateClicked {
         fun onBirthDatePicked(date: Long)
@@ -38,14 +38,14 @@ class EditPersonFragment : Fragment() {
     private var birthDate: Long = 0L
     private var deathDate: Long = 0L
 
-    private val editPersonViewModel: EditPersonViewModel by viewModels()
+    private val savePersonViewModel: SavePersonViewModel by viewModels()
 
     override fun onCreate(savedInstanceState: Bundle?) {
         Log.d(TAG, "onCreate: stars")
         super.onCreate(savedInstanceState)
 
 
-        editPersonViewModel.currentQuotesLD.observe(this,
+        savePersonViewModel.currentQuotesLD.observe(this,
             {
                 Log.d(TAG, "onCreate: observing quotes with values $it")
                 quotes = it
@@ -59,7 +59,7 @@ class EditPersonFragment : Fragment() {
 
             })
 
-        editPersonViewModel.birthDateLD.observe(this,
+        savePersonViewModel.birthDateLD.observe(this,
             {
 
                 val dateFormat = DateFormat.getDateFormat(context) // formats date depending on different parts of a world
@@ -68,7 +68,7 @@ class EditPersonFragment : Fragment() {
                 binding.etBirthDate.setText(userDate)
             })
 
-        editPersonViewModel.deathDateLD.observe(this,
+        savePersonViewModel.deathDateLD.observe(this,
             {
                 val dateFormat = DateFormat.getDateFormat(context)
                 val userDate = dateFormat.format(it)
@@ -90,7 +90,7 @@ class EditPersonFragment : Fragment() {
 
 
         binding.lvPersonQuotes.setOnItemClickListener {parent, view, position, id ->
-            editPersonViewModel.deleteQuote(position)
+            savePersonViewModel.deleteQuote(position)
         }
 
 
@@ -98,7 +98,7 @@ class EditPersonFragment : Fragment() {
             val quote = binding.etQuote.text.toString()
             Log.d(TAG, "onCreate: adding quote with value $quote")
             if(quote.isNotEmpty()) {
-                editPersonViewModel.addQuote(quote)
+                savePersonViewModel.addQuote(quote)
             }
         }
 
@@ -108,7 +108,7 @@ class EditPersonFragment : Fragment() {
                     Toast.makeText(context, getString(R.string.toast_fill_all), Toast.LENGTH_SHORT).show()
                 }
                 else {
-                    editPersonViewModel.saveInspiringPerson(
+                    savePersonViewModel.saveInspiringPerson(
                             InspiringPerson(imageLink = etImageLink.text.toString(),
                                     description = addeditDescription.text.toString(), birthDate = birthDate,
                                     deathDate = deathDate)
@@ -169,6 +169,6 @@ class EditPersonFragment : Fragment() {
     companion object {
 
         @JvmStatic
-        fun newInstance() = EditPersonFragment()
+        fun newInstance() = SavePersonFragment()
     }
 }

@@ -5,6 +5,7 @@ import androidx.room.ForeignKey
 import androidx.room.ForeignKey.CASCADE
 import androidx.room.Index
 import androidx.room.PrimaryKey
+import java.io.Serializable
 
 
 @Entity(
@@ -18,4 +19,4 @@ data class Quote (
     @PrimaryKey(autoGenerate = true) val quoteId: Long = 0,
     val inspiringPersonId: Long,
     val quoteText: String
-)
+) : Serializable

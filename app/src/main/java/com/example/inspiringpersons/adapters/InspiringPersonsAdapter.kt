@@ -5,17 +5,17 @@ import android.view.LayoutInflater
 import android.view.ViewGroup
 import androidx.recyclerview.widget.RecyclerView
 import com.chauthai.swipereveallayout.ViewBinderHelper
-import com.example.inspiringpersons.model.PersonsWithQuotes
+import com.example.inspiringpersons.model.PersonWithQuotes
 import com.example.inspiringpersons.databinding.ItemInspiringPersonBinding
 
 private const val TAG = "InspiringPersonsAdap"
 
-class InspiringPersonsAdapter (private var personsWithQuotes: List<PersonsWithQuotes>, private val listener: OnPersonClickListener)
+class InspiringPersonsAdapter (private var personWithQuotes: List<PersonWithQuotes>, private val listener: OnPersonClickListener)
     : RecyclerView.Adapter<InspiringPersonsViewHolder>(){
     interface OnPersonClickListener {
-        fun onItemClick(personWithQuotes: PersonsWithQuotes)
-        fun onEditClick(personWithQuotes: PersonsWithQuotes, viewHolder: RecyclerView.ViewHolder)
-        fun onDeleteClick(personWithQuotes: PersonsWithQuotes, viewHolder: RecyclerView.ViewHolder)
+        fun onItemClick(personWithQuotes: PersonWithQuotes)
+        fun onEditClick(personWithQuotes: PersonWithQuotes, viewHolder: RecyclerView.ViewHolder)
+        fun onDeleteClick(personWithQuotes: PersonWithQuotes, viewHolder: RecyclerView.ViewHolder)
     }
 
     private val viewBinderHelper = ViewBinderHelper()
@@ -33,19 +33,19 @@ class InspiringPersonsAdapter (private var personsWithQuotes: List<PersonsWithQu
 
         //swipe functionality
         viewBinderHelper.setOpenOnlyOne(true)
-        viewBinderHelper.bind(binding.swipeLayout, personsWithQuotes[position].toString()) // string that identifies viewHolder item
-        viewBinderHelper.closeLayout(personsWithQuotes[position].toString())
+        viewBinderHelper.bind(binding.swipeLayout, personWithQuotes[position].toString()) // string that identifies viewHolder item
+        viewBinderHelper.closeLayout(personWithQuotes[position].toString())
 
-        holder.bind(personsWithQuotes[position], listener)
+        holder.bind(personWithQuotes[position], listener)
     }
 
     override fun getItemCount(): Int {
-        return personsWithQuotes.size
+        return personWithQuotes.size
     }
 
-    fun loadNewPersons(newPersons: List<PersonsWithQuotes>) {
-        Log.d(TAG, "loadNewPersons: starts with $newPersons and old persons are $personsWithQuotes")
-        personsWithQuotes = newPersons
+    fun loadNewPersons(newPersons: List<PersonWithQuotes>) {
+        Log.d(TAG, "loadNewPersons: starts with $newPersons and old persons are $personWithQuotes")
+        personWithQuotes = newPersons
         notifyDataSetChanged()
     }
 

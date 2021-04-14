@@ -19,10 +19,10 @@ import kotlinx.coroutines.launch
 import javax.inject.Inject
 
 
-private const val TAG = "EditPersonViewModel"
+private const val TAG = "SavePersonViewModel"
 
 @HiltViewModel
-class EditPersonViewModel @Inject constructor(
+class SavePersonViewModel @Inject constructor(
         private val inspiringPersonsRepository: InspiringPersonsRepository,
         private val quoteRepository: QuoteRepository, @SharedPrefModule.DateSharedPreferences private val dateSharedPref: SharedPreferences) : ViewModel() {
 

@@ -6,7 +6,7 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.asLiveData
 import androidx.lifecycle.viewModelScope
 import com.example.inspiringpersons.model.InspiringPerson
-import com.example.inspiringpersons.model.PersonsWithQuotes
+import com.example.inspiringpersons.model.PersonWithQuotes
 import com.example.inspiringpersons.repositories.InspiringPersonsRepository
 import com.example.inspiringpersons.repositories.QuoteRepository
 import dagger.hilt.android.lifecycle.HiltViewModel
@@ -20,7 +20,7 @@ private const val TAG = "PersonsViewModel"
 class PersonsViewModel @Inject constructor(quoteRepository: QuoteRepository,
                                            private val inspiringPersonsRepository: InspiringPersonsRepository) : ViewModel() {
 
-    val personsWithQuotes: LiveData<List<PersonsWithQuotes>> = quoteRepository.getPersonsAndQuotes().asLiveData() // kotlin flow it will automatically collect updates from database
+    val personWithQuotes: LiveData<List<PersonWithQuotes>> = quoteRepository.getPersonsAndQuotes().asLiveData() // kotlin flow it will automatically collect updates from database
 
 
     fun deletePerson(inspiringPerson: InspiringPerson) {

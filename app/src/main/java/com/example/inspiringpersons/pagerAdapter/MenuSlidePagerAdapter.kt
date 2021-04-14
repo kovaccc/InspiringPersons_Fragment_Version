@@ -4,7 +4,7 @@ import android.util.Log
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.FragmentActivity
 import androidx.viewpager2.adapter.FragmentStateAdapter
-import com.example.inspiringpersons.ui.EditPersonFragment
+import com.example.inspiringpersons.ui.SavePersonFragment
 import com.example.inspiringpersons.ui.PersonListFragment
 import java.util.ArrayList
 
@@ -26,9 +26,9 @@ class MenuSlidePagerAdapter(fragmentActivity: FragmentActivity, private val node
     override fun createFragment(position: Int): Fragment {
         Log.d(TAG, "createFragment: starts with position$position")
         val result = when(position) {
-            0 -> EditPersonFragment.newInstance()
+            0 -> SavePersonFragment.newInstance()
             1 -> PersonListFragment.newInstance()
-            else -> EditPersonFragment.newInstance()
+            else -> SavePersonFragment.newInstance()
         }
         Log.d(TAG, "createFragment: ends with position $result")
 

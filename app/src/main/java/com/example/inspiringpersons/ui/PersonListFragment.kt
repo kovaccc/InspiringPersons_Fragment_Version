@@ -14,8 +14,7 @@ import androidx.recyclerview.widget.RecyclerView
 import com.example.inspiringpersons.R
 import com.example.inspiringpersons.adapters.InspiringPersonsAdapter
 import com.example.inspiringpersons.databinding.FragmentPersonListBinding
-import com.example.inspiringpersons.model.InspiringPerson
-import com.example.inspiringpersons.model.PersonsWithQuotes
+import com.example.inspiringpersons.model.PersonWithQuotes
 import com.example.inspiringpersons.viewmodels.PersonsViewModel
 import dagger.hilt.android.AndroidEntryPoint
 
@@ -27,7 +26,7 @@ class PersonListFragment : Fragment(), InspiringPersonsAdapter.OnPersonClickList
 
 
     interface OnPersonEdit {
-        fun onPersonEdit (personWithQuotes: PersonsWithQuotes)
+        fun onPersonEdit (personWithQuotes: PersonWithQuotes)
     }
 
     private lateinit var fragmentPersonListBinding: FragmentPersonListBinding
@@ -39,7 +38,7 @@ class PersonListFragment : Fragment(), InspiringPersonsAdapter.OnPersonClickList
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
 
-        personsViewModel.personsWithQuotes.observe(this, {
+        personsViewModel.personWithQuotes.observe(this, {
                         Log.d(TAG, "onCreate: observing personsWithQuotes with values $it")
                         personsAdapter.loadNewPersons(it)
                         Log.d(TAG, "onCreate: observing personsWithQuotes with adapter value ${personsAdapter.itemCount}")
@@ -75,24 +74,26 @@ class PersonListFragment : Fragment(), InspiringPersonsAdapter.OnPersonClickList
 
     }
 
-    override fun onItemClick(personWithQuotes: PersonsWithQuotes) {
+    override fun onItemClick(personWithQuotes: PersonWithQuotes) {
+        Log.d(TAG, "onItemClick: starts with $personWithQuotes")
         val randomQuote = if(personWithQuotes.personQuotes.isEmpty()) getString(R.string.toast_empty_quote) else personWithQuotes.personQuotes.shuffled().random().quoteText
         Toast.makeText(context, randomQuote, Toast.LENGTH_SHORT).show()
 
     }
 
     override fun onEditClick (
-        personWithQuotes: PersonsWithQuotes,
-        viewHolder: RecyclerView.ViewHolder
+            personWithQuotes: PersonWithQuotes,
+            viewHolder: RecyclerView.ViewHolder
     ) {
-        Log.d(TAG, "onEditClick: starts with $personWithQuotes")
+        Log.d(TAG, "onEditClick: starts with $personWithQuotes and $viewHolder")
         (activity as OnPersonEdit).onPersonEdit(personWithQuotes)
     }
 
     override fun onDeleteClick(
-        personWithQuotes: PersonsWithQuotes,
-        viewHolder: RecyclerView.ViewHolder
+            personWithQuotes: PersonWithQuotes,
+            viewHolder: RecyclerView.ViewHolder
     ) {
+        Log.d(TAG, "onDeleteClick: starts with $personWithQuotes and $viewHolder")
         personsViewModel.deletePerson(personWithQuotes.inspiringPerson)
     }
 

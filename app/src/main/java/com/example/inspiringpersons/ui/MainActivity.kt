@@ -7,7 +7,6 @@ import android.util.Log
 import androidx.appcompat.app.AppCompatActivity
 import android.widget.DatePicker
 import androidx.activity.viewModels
-import androidx.core.view.get
 import com.example.inspiringpersons.R
 import com.example.inspiringpersons.databinding.ActivityMainBinding
 import com.example.inspiringpersons.databinding.ContentMainBinding
@@ -18,7 +17,7 @@ import com.example.inspiringpersons.viewmodels.MainViewModel
 import dagger.hilt.android.AndroidEntryPoint
 import java.util.*
 import com.example.inspiringpersons.dialogs.DATE_PICKER_DATE
-import com.example.inspiringpersons.model.PersonsWithQuotes
+import com.example.inspiringpersons.model.PersonWithQuotes
 import com.example.inspiringpersons.pagerAdapter.MenuSlidePagerAdapter
 import com.google.android.material.tabs.TabLayoutMediator
 
@@ -28,8 +27,11 @@ private const val DIALOG_BIRTH_DATE = 1
 private const val DIALOG_DEATH_DATE = 2
 
 
+internal const val PERSON_WITH_QUOTES_TRANSFER = "PERSON_WITH_QUOTES_TRANSFER" // use for intent extras
+
+
 @AndroidEntryPoint
-class MainActivity : AppCompatActivity(), DatePickerDialog.OnDateSetListener,EditPersonFragment.OnDateClicked,PersonListFragment.OnPersonEdit {
+class MainActivity : AppCompatActivity(), DatePickerDialog.OnDateSetListener,SavePersonFragment.OnDateClicked,PersonListFragment.OnPersonEdit {
 
     private lateinit var mainActivityBinding: ActivityMainBinding
     private lateinit var contentMainBinding: ContentMainBinding
@@ -78,10 +80,10 @@ class MainActivity : AppCompatActivity(), DatePickerDialog.OnDateSetListener,Edi
 
     private fun setUpPager() {
 
-        val menuNodesList = arrayListOf(
-              "Edit", "List")
+        val nodesList = arrayListOf(
+              "Save", "List")
 
-        val pagerAdapter = MenuSlidePagerAdapter(this, menuNodesList)
+        val pagerAdapter = MenuSlidePagerAdapter(this, nodesList)
         contentMainBinding.viewPagerPersons.adapter = pagerAdapter
 
         TabLayoutMediator(mainActivityBinding.tabInspiringPerson, contentMainBinding.viewPagerPersons) { tab, position ->
@@ -124,12 +126,11 @@ class MainActivity : AppCompatActivity(), DatePickerDialog.OnDateSetListener,Edi
         showDatePickerDialog(getString(R.string.home_title_death_date), DIALOG_DEATH_DATE, date)
     }
 
-    override fun onPersonEdit(personWithQuotes: PersonsWithQuotes) {
+    override fun onPersonEdit(personWithQuotes: PersonWithQuotes) {
         Log.d(TAG, "onPersonEdit: starts")
 
-        val intent = Intent(this@MainActivity, FoodMenuActivity::class.java)
-        intent.putExtra(MEAL_DATE_TRANSFER, mDate)
-        intent.putExtra(CURRENT_USER_ID_TRANSFER, currentUser?.id)
+        val intent = Intent(this@MainActivity, UpdatePersonActivity::class.java)
+        intent.putExtra(PERSON_WITH_QUOTES_TRANSFER, personWithQuotes)
         startActivity(intent)
     }
 }

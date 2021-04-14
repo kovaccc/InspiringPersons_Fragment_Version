@@ -2,12 +2,13 @@ package com.example.inspiringpersons.model
 
 import androidx.room.Entity
 import androidx.room.PrimaryKey
+import java.io.Serializable
 
 @Entity
 data class InspiringPerson(
-    @PrimaryKey(autoGenerate = true) val personId: Long = 0,
+    @PrimaryKey(autoGenerate = true) var personId: Long = 0,
     val imageLink: String,
     val description: String,
-    val birthDate: Long,
-    val deathDate: Long
-)
+    var birthDate: Long,
+    var deathDate: Long
+): Serializable
