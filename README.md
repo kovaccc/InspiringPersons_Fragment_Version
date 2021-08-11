@@ -2,7 +2,7 @@
 Android application for creating a list of inspiring people
 
 ## About
-Android project that enables saving, fetching, editing and deleting inspiring people from local database using Room which provides an abstraction layer over SQLite. Glide Image Loader is used for listing people images in RecyclerView. Also SharedPreferences are used to save local dates. This version provides different approach of showing different screens by using ViewPager2 with Fragments and TabLayout.
+Android project that enables saving, fetching, editing and deleting inspiring people from local database using Room which provides an abstraction layer over SQLite. Glide Image Loader is used for listing people images in RecyclerView. Also SharedPreferences are used to save local dates. This version provides different approach of showing screens by using ViewPager2 with Fragments and TabLayout.
 
 ## Features
 The android app lets you:
